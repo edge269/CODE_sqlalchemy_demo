@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import random
 import string
+from pathlib import Path
 
 # Allow for a random seed to be set by the user
 RANDOM_SEED = 42  # Set to 42 for the current demo; user can change as needed
@@ -185,12 +186,15 @@ for row in data:
     ])
 df_csv = pd.DataFrame(csv_data, columns=csv_columns)
 
-# Save to Excel
-excel_path = "data/plants_data.xlsx"
-df_csv.to_excel(excel_path, index=False)
+# Use pathlib to ensure output is always in the top-level 'data' directory, regardless of current working directory
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / 'data'
+DATA_DIR.mkdir(exist_ok=True)
 
-# Optionally save to CSV
-csv_path = "data/plants_data.csv"
+csv_path = DATA_DIR / 'plants_data.csv'
+excel_path = DATA_DIR / 'plants_data.xlsx'
+
 df_csv.to_csv(csv_path, index=False)
+df_csv.to_excel(excel_path, index=False)
 
 print(f"Excel file '{excel_path}' and CSV file '{csv_path}' have been generated successfully.")
