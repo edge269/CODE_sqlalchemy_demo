@@ -54,6 +54,34 @@ CREATE TABLE FUEL_ASSEMBLY (
 
 ---
 
+## Schema Notes: Relationships and Pedagogical Choices
+
+### Relationships
+- **Many-to-One (n:1):**
+  - Many rows in one table reference a single row in another table via a foreign key. For example, many FUEL_ASSEMBLY records can reference the same PLANT, meaning multiple assemblies are associated with one plant.
+- **One-to-Many (1:n):**
+  - One row in a table can be referenced by many rows in another table. For example, one PLANT can be referenced by many FUEL_ASSEMBLY records, meaning a plant can have many assemblies.
+- **In this schema:**
+  - Many FUEL_ASSEMBLY rows reference one PLANT (via plant_code/plant_name).
+  - Many FUEL_ASSEMBLY rows reference one REACTOR_DESIGN (via reactor_design_id).
+  - Many FUEL_ASSEMBLY rows reference one EPOCH (via epoch_id).
+  - Many PLANTS rows reference one REACTOR_LOCATION (via reactor_location_id).
+  - One PLANT can have many FUEL_ASSEMBLY records.
+  - One REACTOR_DESIGN can be referenced by many FUEL_ASSEMBLY records.
+  - One EPOCH can be referenced by many FUEL_ASSEMBLY records.
+  - One REACTOR_LOCATION can have many PLANTS.
+
+### About `plant_name` and Data Entry
+- The `plant_name` (e.g., 'FLA') is a site code. When entering a fuel assembly, the user specifies which plant/site (e.g., FLA) and which reactor design (e.g., 1300 MWe or 1600 MWe) it is for. This means the same plant code can be used for different reactor designs at the same site.
+- If instead, each physical reactor at a site had a unique label (e.g., 'FLA1', 'FLA2' for 1300 MWe, 'FLA3' for 1600 MWe), the schema would change: PLANTS would represent individual reactors, and REACTOR_DESIGN would have a direct relationship to PLANTS (one design per plant/physical reactor).
+- In that case, the relationship between FUEL_ASSEMBLY and PLANTS would be many-to-one, but each PLANT would also be tied to a single REACTOR_DESIGN, and the FUEL_ASSEMBLY would not need a separate reactor_design_id.
+
+### Pedagogical Approach
+- The current schema is intentionally simplified for teaching purposes. It demonstrates basic normalization, foreign keys, and how to relate assemblies, plants, designs, and locations.
+- In a real-world application, the schema should be refined with feedback from domain experts to accurately reflect the operational and organizational structure of the nuclear plants and reactors.
+
+---
+
 **Key Takeaways:**
 - SQLite3 is simpler and more permissive, ideal for prototyping and local development.
 - Oracle is stricter, with more explicit data types and constraint naming, suitable for enterprise production environments.
