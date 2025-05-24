@@ -13,33 +13,45 @@ This document outlines the business and data integrity rules defined by the data
 
 ## 3. Manufacturing and Introduction Years
 - `FA_manufacturing_year` is the year the assembly was manufactured. It must be less than or equal to `FA_introduction_year`.
-- `FA_introduction_year` is the year the assembly was introduced into service. It ranges from the start year of the reactor power at the site to the current year (2025).
-- The introduction year of a fuel assembly at a site cannot be before the operation start year of the corresponding reactor power at that site.
+- `FA_introduction_year` is the year the assembly was introduced into service. It ranges from the start year of the reactor power at the plant to the current year (2025).
+- The introduction year of a fuel assembly at a plant cannot be before the operation start year of the corresponding reactor power at that plant.
 
 ## 4. Reactor Power and Type
 - `reactor_power` is one of: 900, 1300, 1450, or 1600 MWe.
 - `reactor_type` is determined by power: 900→CPY, 1300→DPY, 1450→PQY, 1600→EPR.
-- Each reactor site only allows specific reactor powers, and each power at a site has its own operation start year. For example, Flamanville allows 1300 MWe from 1986 and 1600 MWe from 2025.
+- Each plant only allows specific reactor powers, and each power at a plant has its own operation start year. For example, Flamanville allows 1300 MWe from 1986 and 1600 MWe from 2025.
 
 ## 5. Fuel Type
 - For 900 MWe reactors after 1995, fuel type can be "UO2" or "MOX". Otherwise, it is "UO2".
 
-## 6. Reactor Site and Location
-- `reactor_site` is a code (e.g., CHI, CIV) mapped to a specific French nuclear site and region.
-- `reactor_location` is the French region of the site.
-- Each site is associated with a set of allowed reactor powers and their respective operation start years.
+## 6. Plant and Location
+- `plant` is a code (e.g., CHI, CIV) mapped to a specific French nuclear plant and region.
+- `location` is the French region of the plant.
+- Each plant is associated with a set of allowed reactor powers and their respective operation start years.
 
 ## 7. Burnup (BUp)
 - `FA_BUp` is a real number between 0 and 72 GWd/tU, representing the burnup of the assembly.
-- Burnup generally increases with fuel assembly mass, is higher for more recent reactor types, and tends to rise with later reactor epochs. These are observed trends, not strict dependencies.
+- Burnup generally increases with fuel assembly mass, is higher for more recent reactor types, and tends to rise with later epochs. These are observed trends, not strict dependencies.
 
-## 8. Reactor Epoch
-- `reactor_epoch` is a string (e.g., VD1, VD2, ...) indicating the decade since introduction, calculated as: VD[n] = (2025 - introduction_year) // 10 + 1.
+## 8. Epoch
+- `epoch` is a string (e.g., VD1, VD2, ...) indicating the decade since introduction, calculated as: VD[n] = (2025 - introduction_year) // 10 + 1.
 
 ## 9. Data Integrity
 - All fields must be present and non-null.
 - No duplicate `FA_name` values are allowed.
 - All values must conform to the above rules for type and range.
+
+## 10. Pedagogical Note: Data File vs. Database Schema
+- The generated data files (`plants_data.xlsx`, `plants_data.csv`) intentionally use different field names and a denormalized structure compared to the normalized database schema.
+- Example differences:
+  - `FA_mass_kg` in the data file corresponds to `FA_mass` in the database.
+  - `FA_year_made` and `FA_year_intro` correspond to `FA_manufacturing_year` and `FA_introduction_year`.
+  - `plant_code` and `plant_name` are both present in the data file, but only the normalized plant table is in the schema.
+  - `region` in the data file is equivalent to the location table in the schema.
+  - `burnup_GWd_tU` is the same as `FA_BUp`.
+  - `epoch_label` is the same as `epoch`.
+  - The data file includes a combined field `plant_and_region` for demonstration, which does not exist in the normalized schema.
+- This distinction is pedagogical: it demonstrates the difference between a flat, denormalized data export and a normalized relational database design.
 
 ---
 This document should be referenced for all data modeling, validation, and ORM mapping tasks in this project.
