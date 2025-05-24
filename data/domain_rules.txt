@@ -1,0 +1,42 @@
+# Work Domain Rules for Nuclear Fuel Assembly Data
+
+This document outlines the business and data integrity rules defined by the data owner for the structure and content of the nuclear fuel assembly dataset used in this project.
+
+## 1. Fuel Assembly (FA) Naming
+- Each fuel assembly (FA) must have a unique identifier (`FA_name`).
+- The FA name follows the pattern: `F` + [A-Z] + [1000-9999] (e.g., FJ1234).
+
+## 2. Mass and Length
+- The mass of a fuel assembly (`FA_mass`) is a real number, typically distributed around a central value depending on the assembly's length.
+- 900 MWe FAs are shorter (12ft); all other reactor powers use longer (14ft) FAs.
+- The FA length in feet (`FA_length_ft`) must be recorded as 12 or 14 accordingly.
+
+## 3. Manufacturing and Introduction Years
+- `FA_manufacturing_year` is the year the assembly was manufactured. It must be less than or equal to `FA_introduction_year`.
+- `FA_introduction_year` is the year the assembly was introduced into service. It ranges from 1970 to the current year (2025).
+
+## 4. Reactor Power and Type
+- `reactor_power` is one of: 900, 1300, 1450, or 1600 MWe.
+- `reactor_type` is determined by power: 900→CPY, 1300→DPY, 1450→PQY, 1600→EPR.
+
+## 5. Fuel Type
+- For 900 MWe reactors after 1995, fuel type can be "UO2" or "MOX". Otherwise, it is "UO2".
+
+## 6. Reactor Site and Location
+- `reactor_site` is a code (e.g., CHI, CIV) mapped to a specific French nuclear site and region.
+- `reactor_location` is the French region of the site.
+
+## 7. Burnup (BUp)
+- `FA_BUp` is a real number between 0 and 72 GWd/tU, representing the burnup of the assembly.
+- Burnup generally increases with fuel assembly mass, is higher for more recent reactor types, and tends to rise with later reactor epochs. These are observed trends, not strict dependencies.
+
+## 8. Reactor Epoch
+- `reactor_epoch` is a string (e.g., VD1, VD2, ...) indicating the decade since introduction, calculated as: VD[n] = (2025 - introduction_year) // 10 + 1.
+
+## 9. Data Integrity
+- All fields must be present and non-null.
+- No duplicate `FA_name` values are allowed.
+- All values must conform to the above rules for type and range.
+
+---
+This document should be referenced for all data modeling, validation, and ORM mapping tasks in this project.

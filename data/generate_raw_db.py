@@ -3,6 +3,11 @@ import numpy as np
 import random
 import string
 
+# Allow for a random seed to be set by the user
+RANDOM_SEED = 42  # Set to 42 for the current demo; user can change as needed
+random.seed(RANDOM_SEED)
+np.random.seed(RANDOM_SEED)
+
 # Define the list of French nuclear reactors and their locations
 reactor_sites = {
     "CHI": ("Chinon", "Centre-Val de Loire"),
@@ -39,9 +44,22 @@ def generate_unique_fa_name(existing_names):
             existing_names.add(fa_name)
             return fa_name
 
-# Function to generate a random FA mass
-def generate_fa_mass():
-    return round(np.random.normal(750, 25), 1)
+# Function to determine FA length based on reactor power
+def determine_fa_length_ft(reactor_power):
+    if reactor_power == 900:
+        return 12
+    else:
+        return 14
+
+# Function to generate a random FA mass based on FA length
+def generate_fa_mass(fa_length_ft):
+    if fa_length_ft == 12:
+        mean = 750
+        std = 25
+    else:  # 14 ft
+        mean = 750 * 14 / 12
+        std = 25 * 14 / 12
+    return round(np.random.normal(mean, std), 1)
 
 # Function to generate a random FA introduction year
 def generate_fa_introduction_year():
@@ -71,9 +89,32 @@ def determine_fuel_type(reactor_power, introduction_year):
 def generate_fa_manufacturing_year(introduction_year):
     return introduction_year - random.randint(0, 5)
 
-# Function to generate a random FA BUp
-def generate_fa_bup():
-    return round(random.uniform(0, 72), 1)
+# Function to generate a random FA BUp based on mass, reactor type, and epoch
+def generate_fa_bup(fa_mass, reactor_power, reactor_epoch):
+    # Base BUp: linear with mass (normalized to 0-72 GWd/tM)
+    min_mass = 750  # 12ft mean
+    max_mass = 875  # 14ft mean
+    base_bup = 72 * (fa_mass - min_mass) / (max_mass - min_mass)
+    base_bup += np.random.normal(0, 2)  # add some randomness (std=2)
+    base_bup = max(0, min(base_bup, 72))
+
+    # Reactor type factor: 1300, 1450, 1600 MWe allow up to 20% more BUp
+    if reactor_power in [1300, 1450, 1600]:
+        type_factor = 1.2 + np.random.normal(0, 0.03)  # 20% more, slight randomness
+    else:
+        type_factor = 1.0 + np.random.normal(0, 0.05)  # more randomness for 900 MWe
+    bup_type = base_bup * type_factor
+    bup_type = max(0, min(bup_type, 72))
+
+    # Reactor epoch factor: +2% per epoch (VDn), slight randomness
+    try:
+        epoch_num = int(reactor_epoch[2:])
+    except Exception:
+        epoch_num = 1
+    epoch_factor = 1 + 0.02 * epoch_num + np.random.normal(0, 0.005)
+    bup_final = bup_type * epoch_factor
+    bup_final = max(0, min(bup_final, 72))
+    return round(bup_final, 1)
 
 # Function to determine reactor epoch based on introduction year
 def determine_reactor_epoch(introduction_year):
@@ -86,31 +127,37 @@ data = []
 existing_names = set()  # Set to keep track of existing FA names
 for _ in range(10000):  # Generate 10,000 rows of data
     fa_name = generate_unique_fa_name(existing_names)
-    fa_mass = generate_fa_mass()
     fa_introduction_year = generate_fa_introduction_year()
     reactor_power = determine_reactor_power(fa_introduction_year)
+    fa_length_ft = determine_fa_length_ft(reactor_power)
+    fa_mass = generate_fa_mass(fa_length_ft)
     reactor_type, _ = reactor_power_types[reactor_power]  # Extract only the reactor type
     fuel_type = determine_fuel_type(reactor_power, fa_introduction_year)
     site_code, (reactor_site, reactor_location) = random.choice(list(reactor_sites.items()))
     fa_manufacturing_year = generate_fa_manufacturing_year(fa_introduction_year)
-    fa_bup = generate_fa_bup()
     reactor_epoch = determine_reactor_epoch(fa_introduction_year)
+    fa_bup = generate_fa_bup(fa_mass, reactor_power, reactor_epoch)
     
     data.append([
-        fa_name, fa_mass, fa_manufacturing_year, fa_introduction_year,
+        fa_name, fa_mass, fa_length_ft, fa_manufacturing_year, fa_introduction_year,
         reactor_power, reactor_type, fuel_type, site_code,
         reactor_location, fa_bup, reactor_epoch
     ])
 
 # Create a DataFrame
 columns = [
-    "FA_name", "FA_mass", "FA_manufacturing_year", "FA_introduction_year",
+    "FA_name", "FA_mass", "FA_length_ft", "FA_manufacturing_year", "FA_introduction_year",
     "reactor_power", "reactor_type", "fuel_type", "reactor_site",
     "reactor_location", "FA_BUp", "reactor_epoch"
 ]
 df = pd.DataFrame(data, columns=columns)
 
 # Save to Excel
-df.to_excel("nuclear_data.xlsx", index=False)
+excel_path = "nuclear_data.xlsx"
+df.to_excel(excel_path, index=False)
 
-print("Excel file 'nuclear_data.xlsx' has been generated successfully.")
+# Optionally save to CSV
+csv_path = "nuclear_data.csv"
+df.to_csv(csv_path, index=False)
+
+print(f"Excel file '{excel_path}' and CSV file '{csv_path}' have been generated successfully.")
