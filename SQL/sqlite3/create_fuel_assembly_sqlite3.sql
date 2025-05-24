@@ -1,0 +1,40 @@
+-- SQL schema for the nuclear fuel assembly dataset (SQLite3 version)
+
+CREATE TABLE REACTOR_LOCATIONS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    reactor_location TEXT NOT NULL
+);
+
+CREATE TABLE EPOCHS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    epoch TEXT NOT NULL
+);
+
+CREATE TABLE REACTOR_DESIGN (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    reactor_power INTEGER NOT NULL,
+    reactor_type TEXT NOT NULL
+);
+
+CREATE TABLE PLANTS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    plant_name TEXT NOT NULL,
+    reactor_location_id INTEGER NOT NULL,
+    FOREIGN KEY (reactor_location_id) REFERENCES REACTOR_LOCATIONS(id)
+);
+
+CREATE TABLE FUEL_ASSEMBLY (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    FA_name TEXT NOT NULL,
+    FA_mass REAL NOT NULL,
+    FA_length_ft INTEGER NOT NULL,
+    FA_manufacturing_year INTEGER NOT NULL,
+    FA_BUp REAL NOT NULL,
+    reactor_design_id INTEGER NOT NULL,
+    plant_id INTEGER NOT NULL,
+    epoch_id INTEGER NOT NULL,
+    introduction_year INTEGER NOT NULL,
+    FOREIGN KEY (reactor_design_id) REFERENCES REACTOR_DESIGN(id),
+    FOREIGN KEY (plant_id) REFERENCES PLANTS(id),
+    FOREIGN KEY (epoch_id) REFERENCES EPOCHS(id)
+);

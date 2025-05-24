@@ -26,22 +26,22 @@ reactor_sites = {
     "TRI": ("Tricastin", "Auvergne-Rhône-Alpes"),
 }
 
-# Mapping of reactor sites to allowed reactor powers
+# Mapping of reactor sites to allowed reactor powers and operation start year
 site_reactor_power_map = {
-    "CHI": [900],  # Chinon (CPY)
-    "CIV": [1450],  # Civaux (N4)
-    "CRU": [900],  # Cruas (CPY)
-    "DAM": [900],  # Dampierre (CPY)
-    "FES": [900],  # Fessenheim (CPY, historical)
-    "FLA": [1300, 1600],  # Flamanville (P4, EPR)
-    "GOL": [1300],  # Golfech (P'4)
-    "GRA": [900],  # Gravelines (CPY)
-    "NOG": [1300],  # Nogent (P'4)
-    "PAL": [1300],  # Paluel (P4)
-    "PEN": [1300],  # Penly (P'4)
-    "SAL": [1300],  # Saint-Alban (P4)
-    "STL": [900],  # Saint-Laurent (CPY)
-    "TRI": [900],  # Tricastin (CPY)
+    "CHI": {"powers": {900: 1983}},  # Chinon (CPY)
+    "CIV": {"powers": {1450: 1998}},  # Civaux (N4)
+    "CRU": {"powers": {900: 1984}},  # Cruas (CPY)
+    "DAM": {"powers": {900: 1980}},  # Dampierre (CPY)
+    "FES": {"powers": {900: 1977}},  # Fessenheim (CPY, historical)
+    "FLA": {"powers": {1300: 1986, 1600: 2025}},  # Flamanville (1300, EPR)
+    "GOL": {"powers": {1300: 1993}},  # Golfech (P'4)
+    "GRA": {"powers": {900: 1980}},  # Gravelines (CPY)
+    "NOG": {"powers": {1300: 1987}},  # Nogent (P'4)
+    "PAL": {"powers": {1300: 1984}},  # Paluel (P4)
+    "PEN": {"powers": {1300: 1990}},  # Penly (P'4)
+    "SAL": {"powers": {1300: 1986}},  # Saint-Alban (P4)
+    "STL": {"powers": {900: 1981}},  # Saint-Laurent (CPY)
+    "TRI": {"powers": {900: 1980}},  # Tricastin (CPY)
 }
 
 # Define reactor power and types with their initial operation years
@@ -145,12 +145,16 @@ data = []
 existing_names = set()  # Set to keep track of existing FA names
 for _ in range(10000):  # Generate 10,000 rows of data
     site_code, (reactor_site, reactor_location) = random.choice(list(reactor_sites.items()))
-    allowed_powers = site_reactor_power_map.get(site_code, [900, 1300, 1450, 1600])
+    site_info = site_reactor_power_map.get(site_code, {"powers": {900: 1980}})
+    allowed_powers = list(site_info["powers"].keys())
     reactor_power = random.choice(allowed_powers)
+    # Get the correct start year for the chosen power at this site
+    site_start_year = site_info["powers"][reactor_power]
     fa_length_ft = determine_fa_length_ft(reactor_power)
     fa_mass = generate_fa_mass(fa_length_ft)
     fa_name = generate_unique_fa_name(existing_names)
-    fa_introduction_year = generate_fa_introduction_year()
+    # Introduction year must be >= site_start_year for the chosen power
+    fa_introduction_year = random.randint(site_start_year, 2025)
     reactor_type, _ = reactor_power_types[reactor_power]  # Extract only the reactor type
     fuel_type = determine_fuel_type(reactor_power, fa_introduction_year)
     fa_manufacturing_year = generate_fa_manufacturing_year(fa_introduction_year)
@@ -172,11 +176,11 @@ columns = [
 df = pd.DataFrame(data, columns=columns)
 
 # Save to Excel
-excel_path = "nuclear_data.xlsx"
+excel_path = "data/nuclear_data.xlsx"
 df.to_excel(excel_path, index=False)
 
 # Optionally save to CSV
-csv_path = "nuclear_data.csv"
+csv_path = "data/nuclear_data.csv"
 df.to_csv(csv_path, index=False)
 
 print(f"Excel file '{excel_path}' and CSV file '{csv_path}' have been generated successfully.")

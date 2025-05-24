@@ -1,0 +1,35 @@
+# SQL Table and Dependency Rules for Nuclear Fuel Assembly Data
+
+This document describes the main entities, their relationships, and the dependencies for the SQL schema representing the nuclear fuel assembly dataset. These rules are written in plain English and are intended to guide the SQL table design and constraints.
+
+## Entities
+- FUEL_ASSEMBLY: Stores information about each fuel assembly, including name, mass, length, manufacturing year, burnup, and introduction year. Each fuel assembly references a reactor core, a reactor site, and a reactor epoch via foreign keys.
+- REACTOR_CORE: Stores information about reactor cores, including power and type.
+- REACTOR_SITES: Stores information about reactor sites (site names) and references a reactor location via a foreign key.
+- REACTOR_LOCATIONS: Stores information about reactor locations (region names).
+- REACTOR_EPOCHS: Stores information about reactor epochs (epoch labels).
+
+## Relationships and Foreign Keys
+- Each FUEL_ASSEMBLY references:
+  - A REACTOR_CORE (reactor_core_id)
+  - A REACTOR_SITE (reactor_site_id)
+  - A REACTOR_EPOCH (reactor_epoch_id)
+- Each REACTOR_SITE references:
+  - A REACTOR_LOCATION (reactor_location_id)
+- FUEL_ASSEMBLY does not directly reference a location; the location is determined via the associated site.
+
+## Field Rules and Trends
+- Each fuel assembly has a unique name (`FA_name`).
+- Mass and length are attributes of the fuel assembly. Length is either 12 or 14 feet, and mass tends to increase with length.
+- Manufacturing year is required for each fuel assembly.
+- Burnup (`FA_BUp`) is a real number between 0 and 72 GWd/tU. Burnup generally increases with mass, is higher for more recent reactor types, and tends to rise with later reactor epochs. These are observed trends, not strict dependencies.
+- Reactor core, site, location, and epoch are represented as separate entities for normalization.
+- The introduction year of a fuel assembly at a site cannot be before the operation start year of the corresponding reactor power at that site.
+
+## Integrity Constraints
+- Each table has a primary key (id).
+- Foreign key constraints enforce relationships between tables.
+- All fields should be present (NOT NULL) and conform to their expected types and ranges.
+
+---
+This document should be referenced for all SQL schema design and data integrity enforcement in this project.
