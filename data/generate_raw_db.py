@@ -26,6 +26,24 @@ reactor_sites = {
     "TRI": ("Tricastin", "Auvergne-Rhône-Alpes"),
 }
 
+# Mapping of reactor sites to allowed reactor powers
+site_reactor_power_map = {
+    "CHI": [900],  # Chinon (CPY)
+    "CIV": [1450],  # Civaux (N4)
+    "CRU": [900],  # Cruas (CPY)
+    "DAM": [900],  # Dampierre (CPY)
+    "FES": [900],  # Fessenheim (CPY, historical)
+    "FLA": [1300, 1600],  # Flamanville (P4, EPR)
+    "GOL": [1300],  # Golfech (P'4)
+    "GRA": [900],  # Gravelines (CPY)
+    "NOG": [1300],  # Nogent (P'4)
+    "PAL": [1300],  # Paluel (P4)
+    "PEN": [1300],  # Penly (P'4)
+    "SAL": [1300],  # Saint-Alban (P4)
+    "STL": [900],  # Saint-Laurent (CPY)
+    "TRI": [900],  # Tricastin (CPY)
+}
+
 # Define reactor power and types with their initial operation years
 reactor_power_types = {
     900: ("CPY", 1980),
@@ -126,14 +144,15 @@ def determine_reactor_epoch(introduction_year):
 data = []
 existing_names = set()  # Set to keep track of existing FA names
 for _ in range(10000):  # Generate 10,000 rows of data
-    fa_name = generate_unique_fa_name(existing_names)
-    fa_introduction_year = generate_fa_introduction_year()
-    reactor_power = determine_reactor_power(fa_introduction_year)
+    site_code, (reactor_site, reactor_location) = random.choice(list(reactor_sites.items()))
+    allowed_powers = site_reactor_power_map.get(site_code, [900, 1300, 1450, 1600])
+    reactor_power = random.choice(allowed_powers)
     fa_length_ft = determine_fa_length_ft(reactor_power)
     fa_mass = generate_fa_mass(fa_length_ft)
+    fa_name = generate_unique_fa_name(existing_names)
+    fa_introduction_year = generate_fa_introduction_year()
     reactor_type, _ = reactor_power_types[reactor_power]  # Extract only the reactor type
     fuel_type = determine_fuel_type(reactor_power, fa_introduction_year)
-    site_code, (reactor_site, reactor_location) = random.choice(list(reactor_sites.items()))
     fa_manufacturing_year = generate_fa_manufacturing_year(fa_introduction_year)
     reactor_epoch = determine_reactor_epoch(fa_introduction_year)
     fa_bup = generate_fa_bup(fa_mass, reactor_power, reactor_epoch)
