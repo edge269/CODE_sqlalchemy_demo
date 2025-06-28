@@ -111,8 +111,8 @@ def generate_fa_manufacturing_year(introduction_year):
 # Function to generate a random FA BUp based on mass, reactor type, and epoch
 def generate_fa_bup(fa_mass, reactor_power, reactor_epoch):
     # Base BUp: linear with mass (normalized to 0-72 GWd/tM)
-    min_mass = 750  # 12ft mean
-    max_mass = 875  # 14ft mean
+    min_mass = 600  # 12ft mean
+    max_mass = 900  # 14ft mean
     base_bup = 30 * (fa_mass - min_mass) / (max_mass - min_mass)
     base_bup += np.random.normal(0, 2)  # add some randomness (std=2)
     base_bup = max(0, min(base_bup, 50))
@@ -123,7 +123,7 @@ def generate_fa_bup(fa_mass, reactor_power, reactor_epoch):
     else:
         type_factor = 1.0 + np.random.normal(0, 0.05)  # more randomness for 900 MWe
     bup_type = base_bup * type_factor
-    bup_type = max(0, min(bup_type, 72))
+    bup_type = max(0, min(bup_type, 50))
 
     # Reactor epoch factor: +2% per epoch (VDn), slight randomness
     try:
@@ -132,7 +132,7 @@ def generate_fa_bup(fa_mass, reactor_power, reactor_epoch):
         epoch_num = 1
     epoch_factor = 1 + 0.02 * epoch_num + np.random.normal(0, 0.005)
     bup_final = bup_type * epoch_factor
-    bup_final = max(0, min(bup_final, 72))
+    bup_final = max(0, min(bup_final, 50))
     return round(bup_final, 1)
 
 # Function to determine reactor epoch based on introduction year and plant operation start year
@@ -178,9 +178,10 @@ csv_data = []
 for row in data:
     # row: [fa_name, fa_mass, fa_length_ft, fa_manufacturing_year, fa_introduction_year, reactor_power, reactor_type, fuel_type, site_code, reactor_location, fa_bup, reactor_epoch]
     plant_start_date_info = site_reactor_power_map[row[8]]["powers"][row[5]]  # Extract the start date for the reactor power at the plant
+    plant_name = reactor_sites[row[8]][0]  # Correctly map the plant name from reactor_sites
     csv_data.append([
         row[0], row[1], row[2], row[3], row[4], row[5],
-        row[6], row[7], row[8], row[9], row[9], row[10], row[11], plant_start_date_info
+        row[6], row[7], row[8], plant_name, row[9], row[10], row[11], plant_start_date_info
     ])
 
 # Ensure DATA_DIR is defined before generating the files
