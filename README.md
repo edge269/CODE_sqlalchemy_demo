@@ -2,14 +2,24 @@
 
 ## Project Objectives & Pedagogical Goals
 
-This project demonstrates the design, normalization, and querying of a synthetic French nuclear fuel assembly dataset using Python (pandas), SQL (SQLite3/Oracle), and SQLAlchemy Core. It is intended as a pedagogical resource for understanding the differences between denormalized flat files and normalized relational database schemas, as well as for illustrating best practices in ETL, schema design, and query formulation.
+This project demonstrates the design, normalization, and querying of a synthetic French nuclear fuel assembly dataset using Python (pandas), SQL (SQLite3/Oracle), and SQLAlchemy Core and ORM. It is intended as a pedagogical resource for understanding the differences between denormalized flat files and normalized relational database schemas, as well as for illustrating best practices in ETL, schema design, and query formulation.
 
 ---
 
+Readers are encouraged to go through the chapters step by step to fully understand the project.
+
 ## 1. Data Generation and Structure
-- Synthetic, pedagogical nuclear fuel assembly data is generated using `data/generate_raw_data.py`.
-- The script uses `pathlib` for robust, relative file handling and always outputs to the top-level `data/` directory.
-- The generated files are `plants_data.csv` and `plants_data.xlsx`, with intentionally denormalized, pedagogical column names (e.g., `FA_mass_kg`, `region`, `plant_code`, etc.) as described in `data/domain_rules.txt`.
+
+
+This section concerns the `/data` folder, which contains:
+
+- **`generate_raw_data.py`**: Python script for generating synthetic nuclear fuel assembly data.
+- **`plants_data.csv`**: Denormalized CSV file containing the generated data.
+- **`plants_data.xlsx`**: Denormalized Excel file containing the generated data.
+- **`domain_rules.md`**: Markdown file detailing the business and data integrity rules for the dataset.
+- **`generate_raw_db.py`**: Script for generating raw database structures.
+- **`plants_data.xlsx` and `plants_data.csv`**: Generated data files with pedagogical column names (e.g., `FA_mass_kg`, `region`, `plant_code`, etc.).
+- **`Uml Database Relationship.pdf`**: A PDF file describing class diagrams in UML (a standard software design description approach). Such diagrams include objects (attributes, methods) and the relationships between these objects, providing a clear representation of a computer program structure.
 
 ## 2. Schema Normalization and Documentation
 - SQL schemas for both SQLite3 and Oracle are designed and normalized, with DDL and DBML in the `SQL/` directory.
@@ -47,6 +57,10 @@ For further inquiries, please contact:
 **Hervé LEBAIL**  
 FDM2-E, Framatome  
 herve.lebail@framatome.com
+
+---
+
+**Special Thanks**: This project benefited from insights provided by ChatGPT, an AI assistant. For similar questions or assistance, consider using ChatGPT to explore and solve complex problems efficiently. Everything here is public domain data (C0 classification) and even fake, for the sole purpose of the topic demonstration. At FRAMATOME feel free to use GenAI (C1 classification).
 
 ---
 

@@ -170,30 +170,28 @@ for _ in range(10000):  # Generate 10,000 rows of data
 # Create a DataFrame with different (denormalized) columns for the CSV/Excel output
 csv_columns = [
     "FA_name", "FA_mass_kg", "FA_length_ft", "FA_year_made", "FA_year_intro", "reactor_power_MWe",
-    "reactor_type_code", "fuel_type", "plant_code", "plant_name", "region", "burnup_GWd_tU", "epoch_label",
-    # Add a combined field for demo
-    "plant_and_region"
+    "reactor_type_code", "fuel_type", "plant_code", "plant_name", "region", "burnup_GWd_tU", "epoch_label"
 ]
+
 csv_data = []
 for row in data:
     # row: [fa_name, fa_mass, fa_length_ft, fa_manufacturing_year, fa_introduction_year, reactor_power, reactor_type, fuel_type, site_code, reactor_location, fa_bup, reactor_epoch]
-    plant_and_region = f"{row[8]} ({row[9]})"
     csv_data.append([
         row[0], row[1], row[2], row[3], row[4], row[5],
-        row[6], row[7], row[8], row[8], row[9], row[10], row[11],
-        plant_and_region
+        row[6], row[7], row[8], row[9], row[9], row[10], row[11]
     ])
-df_csv = pd.DataFrame(csv_data, columns=csv_columns)
 
-# Use pathlib to ensure output is always in the top-level 'data' directory, regardless of current working directory
+# Ensure DATA_DIR is defined before generating the files
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / 'data'
 DATA_DIR.mkdir(exist_ok=True)
 
+# Generate the updated CSV and Excel files
 csv_path = DATA_DIR / 'plants_data.csv'
 excel_path = DATA_DIR / 'plants_data.xlsx'
 
+df_csv = pd.DataFrame(csv_data, columns=csv_columns)
 df_csv.to_csv(csv_path, index=False)
 df_csv.to_excel(excel_path, index=False)
 
-print(f"Excel file '{excel_path}' and CSV file '{csv_path}' have been generated successfully.")
+print(f"Updated Excel file '{excel_path}' and CSV file '{csv_path}' have been generated successfully.")
