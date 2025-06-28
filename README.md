@@ -17,7 +17,6 @@ This section concerns the `/data` folder, which contains:
 - **`plants_data.csv`**: Denormalized CSV file containing the generated data.
 - **`plants_data.xlsx`**: Denormalized Excel file containing the generated data.
 - **`domain_rules.md`**: Markdown file detailing the business and data integrity rules for the dataset.
-- **`generate_raw_db.py`**: Script for generating raw database structures.
 - **`plants_data.xlsx` and `plants_data.csv`**: Generated data files with pedagogical column names (e.g., `FA_mass_kg`, `region`, `plant_code`, etc.).
 - **`Uml Database Relationship.pdf`**: A PDF file describing class diagrams in UML (a standard software design description approach). Such diagrams include objects (attributes, methods) and the relationships between these objects, providing a clear representation of a computer program structure.
 
