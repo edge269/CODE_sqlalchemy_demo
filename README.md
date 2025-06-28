@@ -18,7 +18,8 @@ This section concerns the `/data` folder, which contains:
 - **`plants_data.xlsx`**: Denormalized Excel file containing the generated data.
 - **`domain_rules.md`**: Markdown file detailing the business and data integrity rules for the dataset.
 - **`plants_data.xlsx` and `plants_data.csv`**: Generated data files with pedagogical column names (e.g., `FA_mass_kg`, `region`, `plant_code`, etc.).
-- **`Uml Database Relationship.pdf`**: A PDF file describing class diagrams in UML (a standard software design description approach). Such diagrams include objects (attributes, methods) and the relationships between these objects, providing a clear representation of a computer program structure.
+- **`UML Database Relationship.pdf`**: A PDF file describing class diagrams in UML (a standard software design description approach). Such diagrams include objects (attributes, methods) and the relationships between these objects, providing a clear representation of a computer program structure.
+- **`FA_AC_FA5506.xml`**: A sample XML file providing detailed information about a specific fuel assembly, including grids, nozzle, fuel rods, and plant introduction details.
 
 ## 2. Schema Normalization and Documentation
 - SQL schemas for both SQLite3 and Oracle are designed and normalized, with DDL and DBML in the `SQL/` directory.
