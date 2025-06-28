@@ -113,9 +113,9 @@ def generate_fa_bup(fa_mass, reactor_power, reactor_epoch):
     # Base BUp: linear with mass (normalized to 0-72 GWd/tM)
     min_mass = 750  # 12ft mean
     max_mass = 875  # 14ft mean
-    base_bup = 72 * (fa_mass - min_mass) / (max_mass - min_mass)
+    base_bup = 30 * (fa_mass - min_mass) / (max_mass - min_mass)
     base_bup += np.random.normal(0, 2)  # add some randomness (std=2)
-    base_bup = max(0, min(base_bup, 72))
+    base_bup = max(0, min(base_bup, 50))
 
     # Reactor type factor: 1300, 1450, 1600 MWe allow up to 20% more BUp
     if reactor_power in [1300, 1450, 1600]:
@@ -168,17 +168,19 @@ for _ in range(10000):  # Generate 10,000 rows of data
     ])
 
 # Create a DataFrame with different (denormalized) columns for the CSV/Excel output
+# Add a new column for plant start date information
 csv_columns = [
     "FA_name", "FA_mass_kg", "FA_length_ft", "FA_year_made", "FA_year_intro", "reactor_power_MWe",
-    "reactor_type_code", "fuel_type", "plant_code", "plant_name", "region", "burnup_GWd_tU", "epoch_label"
+    "reactor_type_code", "fuel_type", "plant_code", "plant_name", "region", "burnup_GWd_tU", "epoch_label", "plant_start_date_info"
 ]
 
 csv_data = []
 for row in data:
     # row: [fa_name, fa_mass, fa_length_ft, fa_manufacturing_year, fa_introduction_year, reactor_power, reactor_type, fuel_type, site_code, reactor_location, fa_bup, reactor_epoch]
+    plant_start_date_info = site_reactor_power_map[row[8]]["powers"][row[5]]  # Extract the start date for the reactor power at the plant
     csv_data.append([
         row[0], row[1], row[2], row[3], row[4], row[5],
-        row[6], row[7], row[8], row[9], row[9], row[10], row[11]
+        row[6], row[7], row[8], row[9], row[9], row[10], row[11], plant_start_date_info
     ])
 
 # Ensure DATA_DIR is defined before generating the files
