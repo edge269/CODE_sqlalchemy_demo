@@ -135,10 +135,9 @@ def generate_fa_bup(fa_mass, reactor_power, reactor_epoch):
     bup_final = max(0, min(bup_final, 72))
     return round(bup_final, 1)
 
-# Function to determine reactor epoch based on introduction year
-def determine_reactor_epoch(introduction_year):
-    current_year = 2025  # Assuming the current year is 2025 for this example
-    decade_count = (current_year - introduction_year) // 10 + 1
+# Function to determine reactor epoch based on introduction year and plant operation start year
+def determine_reactor_epoch(introduction_year, operation_start_year):
+    decade_count = (introduction_year - operation_start_year) // 10 + 1
     return f"VD{decade_count}"
 
 # Generate data
@@ -159,7 +158,7 @@ for _ in range(10000):  # Generate 10,000 rows of data
     reactor_type, _ = reactor_power_types[reactor_power]  # Extract only the reactor type
     fuel_type = determine_fuel_type(reactor_power, fa_introduction_year)
     fa_manufacturing_year = generate_fa_manufacturing_year(fa_introduction_year)
-    reactor_epoch = determine_reactor_epoch(fa_introduction_year)
+    reactor_epoch = determine_reactor_epoch(fa_introduction_year, site_start_year)
     fa_bup = generate_fa_bup(fa_mass, reactor_power, reactor_epoch)
     
     data.append([
