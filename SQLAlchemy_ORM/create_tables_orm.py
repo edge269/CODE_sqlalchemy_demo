@@ -54,8 +54,12 @@ class FuelAssembly(Base):
     plant: Mapped['Plant'] = relationship('Plant', back_populates='fuel_assemblies')
     epoch: Mapped['Epoch'] = relationship('Epoch', back_populates='fuel_assemblies')
 
+# Ensure the SQLAlchemy_ORM directory exists for the database file
+script_dir = Path(__file__).resolve().parent
+script_dir.mkdir(parents=True, exist_ok=True)
+
 # Create SQLite database and tables
-DB_PATH = Path(__file__).parent / 'example_orm.db'
+DB_PATH = script_dir / 'example_orm.db'
 engine = create_engine(f'sqlite:///{DB_PATH}')
 Base.metadata.create_all(engine)
 engine.dispose()

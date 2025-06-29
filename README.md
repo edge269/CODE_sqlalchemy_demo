@@ -75,10 +75,12 @@ The `/SQLAlchemy_ORM` folder contains three scripts demonstrating the use of SQL
 
 ## 8. Presentation
 
-The `/presentation` folder contains materials designed for teaching and presenting the concepts covered in this project.
+The `presentation/` folder contains teaching and presentation materials for this project:
 
-- **`ORM_SQLAlchemy_PyCoD_LEBAIL_062025_01.pptm`**: The presentation held in PyCoD online monthly meeting on 04/07/2025.
-- **`material/`**: Supporting images and graphics used in the presentation
+- `presentation/ORM_SQLAlchemy_PyCoD_LEBAIL_062025_01.pptm` — Presentation from the PyCoD online meeting (July 4, 2025).
+- `presentation/material/` — Supporting images and graphics:
+  - `presentation/material/OpenAI-black-monoblossom.svg`
+  - `presentation/material/the-cure-three-imaginary-boys-792639_1200x.webp`
 
 ---
 

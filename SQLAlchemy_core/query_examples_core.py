@@ -152,7 +152,10 @@ with engine.connect() as conn:
     print(pd.read_sql(q5, conn).head())
 
 # Create a session for SQLite
-sqlite_engine = create_engine('sqlite:///example.db')
+script_dir = Path(__file__).resolve().parent
+core_db_path = script_dir / 'example_core.db'
+sqlite_engine = create_engine(f'sqlite:///{core_db_path}')
+metadata.create_all(sqlite_engine)  # create tables in example_core.db
 SessionSQLite = sessionmaker(bind=sqlite_engine)
 session_sqlite = SessionSQLite()
 
@@ -163,12 +166,16 @@ for row in result_sqlite:
     print(row)
 
 # Create a session for Oracle
-oracle_engine = create_engine('oracle://user:password@host:port/service_name')
-SessionOracle = sessionmaker(bind=oracle_engine)
-session_oracle = SessionOracle()
+# Oracle example (wrapped in try/except to avoid invalid connection errors)
+try:
+    oracle_engine = create_engine('oracle://user:password@host:port/service_name')
+    SessionOracle = sessionmaker(bind=oracle_engine)
+    session_oracle = SessionOracle()
 
-# Example query for Oracle
-print("-- Oracle Query Example --")
-result_oracle = session_oracle.query(fuel_assembly).filter(fuel_assembly.c.FA_mass > 500).all()
-for row in result_oracle:
-    print(row)
+    # Example query for Oracle
+    print("-- Oracle Query Example --")
+    result_oracle = session_oracle.query(fuel_assembly).filter(fuel_assembly.c.FA_mass > 500).all()
+    for row in result_oracle:
+        print(row)
+except Exception as e:
+    print(f"[INFO] Skipping Oracle example: {e}")

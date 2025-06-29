@@ -118,34 +118,81 @@ print("Data uploaded successfully.")
 
 The query script (`query_data_orm.py`) retrieves data from the database. Below is an example of Query 4:
 
-### Query 4: Retrieve Plants and Their Fuel Assemblies
+### Query 4: Count Fuel Assemblies in VD3 Epoch and 1450 MWe Reactors
 
-This query retrieves all plants along with their associated fuel assemblies. It demonstrates how to use SQLAlchemy ORM to query relational data efficiently.
+This query counts the number of fuel assemblies matching specific criteria using SQLAlchemy ORM.
 
 ```python
-results = session.query(Plant).join(FuelAssembly).all()
-for plant in results:
-    print(f"Plant: {plant.plant_name}")
-    for assembly in plant.fuel_assemblies:
-        print(f"  Fuel Assembly: {assembly.FA_name}, Mass: {assembly.FA_mass}")
+result = session.query(func.count(FuelAssembly.id))\
+    .join(ReactorDesign)\
+    .join(Epoch)\
+    .filter(
+        and_(Epoch.epoch == 'VD3', ReactorDesign.reactor_power == 1450)
+    )\
+    .scalar()
+print(result)
 ```
 
 ### Detailed Explanation
 
 1. **Query Construction**:
-   - The `session.query(Plant)` starts the query by selecting the `Plant` table.
-   - The `.join(FuelAssembly)` method specifies an inner join between the `Plant` and `FuelAssembly` tables based on their relationship.
+   - `session.query(func.count(FuelAssembly.id))` selects a scalar count of `FuelAssembly.id`.
+   - `.join(ReactorDesign)` and `.join(Epoch)` link the `FuelAssembly` table with `ReactorDesign` and `Epoch`.
 
-2. **Execution**:
-   - The `.all()` method executes the query and retrieves all matching rows.
+2. **Filtering**:
+   - The `filter` method applies `Epoch.epoch == 'VD3'` and `ReactorDesign.reactor_power == 1450` to narrow the count to assemblies in the VD3 epoch and reactors of 1450 MWe.
 
-3. **Iteration**:
-   - The results are iterated using a `for` loop.
-   - For each `Plant` object, the `plant_name` attribute is printed.
-   - The `fuel_assemblies` relationship is accessed to retrieve associated `FuelAssembly` objects.
+3. **Execution**:
+   - The `.scalar()` method executes the query and returns the single count value.
 
 4. **Output**:
-   - For each `FuelAssembly` object, the `FA_name` and `FA_mass` attributes are printed.
+   - The integer count is printed, indicating the number of matching fuel assemblies.
 
 ### Use Case
 This query is useful for generating reports or visualizations that show the relationship between plants and their fuel assemblies. It highlights the power of SQLAlchemy ORM in handling complex relationships with minimal code.
+
+## Potential Enhancements: ETL within ORM Classes
+
+While the current upload script handles bulk insertion, you can improve maintainability and reuse by encapsulating load logic inside ORM classes. For example, add `get_or_create` or `load_from_row` class methods:
+
+```python
+class Plant(Base):
+    # ...existing code...
+
+    @classmethod
+    def get_or_create(cls, session, name: str, location_id: int):
+        """Retrieve a Plant by name or create it if not present."""
+        plant = session.query(cls).filter_by(plant_name=name).first()
+        if not plant:
+            plant = cls(plant_name=name, reactor_location_id=location_id)
+            session.add(plant)
+            session.flush()  # get primary key without commit
+        return plant
+
+class FuelAssembly(Base):
+    # ...existing code...
+
+    @classmethod
+    def load_from_row(cls, session, row):
+        """Create a FuelAssembly from a pandas row, linking to related objects."""
+        design = ReactorDesign.get_or_create(session, row['reactor_power'], row['reactor_type'])
+        plant = Plant.get_or_create(session, row['plant_name'], row['reactor_location_id'])
+        epoch = Epoch.get_or_create(session, row['epoch'])
+        assembly = cls(
+            FA_name=row['FA_name'],
+            FA_mass=row['FA_mass'],
+            # ...other fields...
+            reactor_design_id=design.id,
+            plant_id=plant.id,
+            epoch_id=epoch.id
+        )
+        session.add(assembly)
+        return assembly
+```
+
+### Benefits
+- **Separation of Concerns**: Move ETL details into model classes.  
+- **Reusability**: Use the same load logic across scripts or tests.  
+- **Clarity**: Simplify `upload_data_orm.py` to iterate over CSV rows and call `load_from_row`.
+
+Consider this approach for more robust and maintainable data-loading workflows.
