@@ -3,6 +3,7 @@ import numpy as np
 import random
 import string
 from pathlib import Path
+from openpyxl import load_workbook
 
 # Allow for a random seed to be set by the user
 RANDOM_SEED = 42  # Set to 42 for the current demo; user can change as needed
@@ -198,3 +199,10 @@ df_csv.to_csv(csv_path, index=False)
 df_csv.to_excel(excel_path, index=False)
 
 print(f"Updated Excel file '{excel_path}' and CSV file '{csv_path}' have been generated successfully.")
+
+# Apply filters to the Excel file
+wb = load_workbook(excel_path)
+ws = wb.active
+ws.auto_filter.ref = ws.dimensions  # Apply filters to all columns
+wb.save(excel_path)
+print(f"Filters applied to Excel file '{excel_path}'.")

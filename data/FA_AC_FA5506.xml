@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FuelAssembly>
+    <FAName>AC_FA5506</FAName>
+    <Details>
+        <Mass>889.5 kg</Mass>
+        <Length>14 ft</Length>
+        <ManufacturingYear>2004</ManufacturingYear>
+        <Plant>
+            <Code>PEN</Code>
+            <Name>Penly</Name>
+            <Region>Normandy</Region>
+            <StartYear>1990</StartYear>
+        </Plant>
+        <Burnup>36.6 GWd/tU</Burnup>
+        <Epoch>VD2</Epoch>
+    </Details>
+    <Components>
+        <Grids>
+            <Grid>
+                <Material>Zircaloy</Material>
+                <Dimensions>10x10 cm</Dimensions>
+            </Grid>
+            <Grid>
+                <Material>Inconel</Material>
+                <Dimensions>12x12 cm</Dimensions>
+            </Grid>
+        </Grids>
+        <Nozzle>
+            <Material>Stainless Steel</Material>
+            <Dimensions>15x15 cm</Dimensions>
+        </Nozzle>
+        <FuelRods>
+            <Rod>
+                <Material>UO2</Material>
+                <Diameter>1 cm</Diameter>
+                <Length>13.5 ft</Length>
+            </Rod>
+            <Rod>
+                <Material>MOX</Material>
+                <Diameter>1 cm</Diameter>
+                <Length>13.5 ft</Length>
+            </Rod>
+        </FuelRods>
+    </Components>
+    <Destination>
+        <Plant>Penly</Plant>
+        <Region>Normandy</Region>
+    </Destination>
+</FuelAssembly>
