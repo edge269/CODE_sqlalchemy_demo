@@ -65,8 +65,13 @@ The `/SQLAlchemy_core` folder contains scripts demonstrating the use of SQLAlche
 - **`query_examples_core.py`**: Contains example queries using SQLAlchemy Core to interact with the database. Demonstrates how to perform operations like data insertion, selection, and aggregation.
 - **`sqlalchemy_core_summary.md`**: A Markdown file summarizing the SQLAlchemy Core approach, highlighting identical table creation and query execution for SQLite and Oracle, with examples of the `FUEL_ASSEMBLY` table definition and queries.
 
-
 ## 7. SQLAlchemy ORM
+
+The `/SQLAlchemy_ORM` folder contains three scripts demonstrating the use of SQLAlchemy ORM:
+
+1. `create_tables_orm.py`: Defines the ORM models and creates the SQLite database tables.
+2. `upload_data_orm.py`: Uploads data from the `plants_data.csv` file into the SQLite database using the ORM models.
+3. `query_data_orm.py`: Executes the same queries as in the SQLAlchemy Core example, but using the ORM approach.
 
 ## 8. Presentation
 
