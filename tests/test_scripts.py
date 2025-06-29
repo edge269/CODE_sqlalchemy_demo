@@ -8,6 +8,10 @@ SCRIPTS = [
     Path('pandas/query_examples_pandas.py'),
     Path('SQLAlchemy_core/query_examples_core.py'),
     Path('SQLAlchemy_core/fuel_assembly_core_demo_full.py'),
+    # ORM scripts
+    Path('SQLAlchemy_ORM/create_tables_orm.py'),
+    Path('SQLAlchemy_ORM/upload_data_orm.py'),
+    Path('SQLAlchemy_ORM/query_data_orm.py'),
 ]
 
 @pytest.mark.parametrize("script_path", SCRIPTS)
