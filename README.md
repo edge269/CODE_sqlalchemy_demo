@@ -21,11 +21,33 @@ This section concerns the `/data` folder, which contains:
 - **`UML Database Relationship.pdf`**: A PDF file describing class diagrams in UML (a standard software design description approach). Such diagrams include objects (attributes, methods) and the relationships between these objects, providing a clear representation of a computer program structure.
 - **`FA_AC_FA5506.xml`**: A sample XML file providing detailed information about a specific fuel assembly, including grids, nozzle, fuel rods, and plant introduction details.
 
-## 2. Schema Normalization and Documentation
-- SQL schemas for both SQLite3 and Oracle are designed and normalized, with DDL and DBML in the `SQL/` directory.
-- Markdown documentation and DBML diagrams compare normalized and denormalized structures, and explain the pedagogical intent.
+## 2. Bibliography
 
-## 3. Query Demonstrations
+The `/bibliography` folder contains reference materials and review articles related to database design, SQL, and data modeling. These resources provide theoretical and practical insights into relational databases and their applications. Key files include:
+
+- **`A Relational Model of Data for Large Shared Data Banks (E. F. Codd).pdf`**: A seminal paper introducing the relational model of data.
+- **Other reference materials**: Books that support the pedagogical goals of the project.
+
+## 3. Pandas Queries and Philosophy
+
+The `/pandas` folder contains scripts and documentation that demonstrate querying denormalized data using pandas. Key files include:
+
+- **`query_examples_pandas.py`**: A Python script showcasing example queries on the flat CSV data, highlighting the challenges and verbosity of pandas compared to SQL.
+- **`pandas_vs_sql_query_philosophy.md`**: A Markdown document comparing the query philosophy of SQL and pandas, emphasizing the advantages of normalization and SQL JOINs versus the manual effort required in pandas for similar tasks.
+
+## 4. SQL Dialects
+
+The `/SQL` folder contains SQL scripts, schema comparisons, and documentation for both SQLite3 and Oracle. Key files include:
+
+- **`sqlite_vs_oracle_schema_comparison.md`**: A Markdown file comparing schema design and syntax between SQLite3 and Oracle, using the nuclear fuel assembly dataset as an example.
+- **`entity_relation_scheme/SQL_sqlite3_entity_relation_scheme.png`**: A PNG file illustrating the entity-relationship diagram for the SQLite3 schema.
+
+Subfolders:
+
+- **`sqlite3/`**: Contains SQLite3-specific scripts and schema files.
+- **`oracle/`**: Contains Oracle-specific scripts and schema files.
+
+## 5. Query Demonstrations
 - Example queries for both SQLite3 and Oracle are provided in their respective folders.
 - `pandas/query_examples_pandas.py` demonstrates how queries are more verbose and error-prone on the flat CSV using pandas.
 - `SQLAlchemy_core/query_examples_core.py`:
@@ -35,19 +57,13 @@ This section concerns the `/data` folder, which contains:
   - Runs a set of analytical queries, using correct SQLAlchemy aggregation functions (`func.max`, `func.min`).
   - All column names and mappings are now consistent with the generated CSV and the domain rules.
 
-## 4. Testing and Automation
-- A `tests/` folder contains `test_scripts.py`, which uses `pathlib` and subprocess to check that all main scripts (data generation, pandas, SQLAlchemy Core) run without error.
-- All scripts now pass these tests.
+## 6. Presentation
 
-## 5. Version Control
-- All changes are tracked and committed in git.
-- The latest state is pushed to the remote repository.
+The `/presentation` folder contains materials designed for teaching and presenting the concepts covered in this project.
 
-## 6. Pedagogical Consistency
-- All code, documentation, and data files are now consistent with the pedagogical goals:
-  - Clear distinction between denormalized (flat) data and normalized relational schema.
-  - Explicit mapping and normalization steps.
-  - Comments and documentation reference the business/domain rules for clarity.
+- **`ORM_SQLAlchemy_PyCoD_LEBAIL_062025_01.pptm`**: The presentation held in PyCoD online monthly meeting on 04/07/2025.
+- **`material/`**: Supporting images and graphics used in the presentation
+
 
 ---
 
