@@ -31,12 +31,14 @@ result = session.query(
 ).all()
 print(result)
 
-# Query 4: Count the number of fuel assemblies in the VD3 epoch and 1450 MWe reactors
-print("\nQuery 4: Number of FA in VD3 and 1450 MWe")
-result = session.query(FuelAssembly).join(ReactorDesign).join(Epoch).filter(
-    and_(Epoch.epoch == 'VD3', ReactorDesign.reactor_power == 1450)
-).count()
-print(result)
+# Query 4: Retrieve Plants and Their Fuel Assemblies
+print("\nQuery 4: Plants and Their Fuel Assemblies")
+# Join Plant and FuelAssembly to get each plant with its assemblies
+results = session.query(Plant).join(FuelAssembly).all()
+for plant in results:
+    print(f"Plant: {plant.plant_name}")
+    for assembly in plant.fuel_assemblies:
+        print(f"  Fuel Assembly: {assembly.FA_name}, Mass: {assembly.FA_mass}")
 
 # Query 5: List distinct plant names and their regions for 1300 MWe plants located in the northernmost regions of France
 print("\nQuery 5: 1300 MWe plants in northernmost regions")
