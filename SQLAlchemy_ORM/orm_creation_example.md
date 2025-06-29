@@ -87,31 +87,28 @@ The upload script (`upload_data_orm.py`) is responsible for inserting data into 
 2. **Read CSV Data**: The script reads data from the `plants_data.csv` file using `pandas`.
 3. **Insert Data**: The script maps the CSV data to ORM objects and inserts them into the database using SQLAlchemy's session management.
 
-### Example Code
 
-Below is a simplified example of how data is uploaded:
+### FuelAssembly Upload Example
+
+Below is how each CSV row is transformed into a `FuelAssembly` ORM object using lookup maps for foreign keys:
 
 ```python
-# Clear existing data
-session.query(FuelAssembly).delete()
-session.query(Plant).delete()
-session.commit()
-
-# Read CSV data
-import pandas as pd
-csv_path = Path(__file__).parent / 'plants_data.csv'
-data = pd.read_csv(csv_path)
-
-# Insert data
-for _, row in data.iterrows():
-    plant = Plant(
-        plant_name=row['plant_name'],
-        reactor_location_id=row['reactor_location_id']
+# after building loc_map, epoch_map, design_map, plant_map
+for _, row in df.iterrows():
+    assembly = FuelAssembly(
+        FA_name=row['FA_name'],
+        FA_mass=row['FA_mass_kg'],
+        FA_length_ft=row['FA_length_ft'],
+        FA_manufacturing_year=row['FA_year_made'],
+        FA_BUp=row['burnup_GWd_tU'],
+        reactor_design_id=design_map[(int(row['reactor_power_MWe']), row['reactor_type_code'])],
+        plant_id=plant_map[(row['plant_code'], row['region'])],
+        epoch_id=epoch_map[row['epoch_label']],
+        introduction_year=row['FA_year_intro']
     )
-    session.add(plant)
-
+    session.add(assembly)
 session.commit()
-print("Data uploaded successfully.")
+print("Fuel assemblies uploaded successfully.")
 ```
 
 ## Query Example
