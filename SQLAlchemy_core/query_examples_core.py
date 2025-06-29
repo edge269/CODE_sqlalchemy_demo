@@ -1,5 +1,6 @@
 import pandas as pd
 from sqlalchemy import create_engine, Table, Column, Integer, String, Float, MetaData, ForeignKey, select, and_, distinct, func
+from sqlalchemy.orm import sessionmaker
 from pathlib import Path
 
 # Use in-memory SQLite for demonstration
@@ -149,3 +150,25 @@ with engine.connect() as conn:
         .join(reactor_design, fuel_assembly.c.reactor_design_id == reactor_design.c.id))
     q5 = q5.where(and_(reactor_design.c.reactor_power == 1300, reactor_locations.c.reactor_location.in_(northern_regions)))
     print(pd.read_sql(q5, conn).head())
+
+# Create a session for SQLite
+sqlite_engine = create_engine('sqlite:///example.db')
+SessionSQLite = sessionmaker(bind=sqlite_engine)
+session_sqlite = SessionSQLite()
+
+# Example query for SQLite
+print("-- SQLite Query Example --")
+result_sqlite = session_sqlite.query(fuel_assembly).filter(fuel_assembly.c.FA_mass > 500).all()
+for row in result_sqlite:
+    print(row)
+
+# Create a session for Oracle
+oracle_engine = create_engine('oracle://user:password@host:port/service_name')
+SessionOracle = sessionmaker(bind=oracle_engine)
+session_oracle = SessionOracle()
+
+# Example query for Oracle
+print("-- Oracle Query Example --")
+result_oracle = session_oracle.query(fuel_assembly).filter(fuel_assembly.c.FA_mass > 500).all()
+for row in result_oracle:
+    print(row)

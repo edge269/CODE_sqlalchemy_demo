@@ -57,13 +57,23 @@ Subfolders:
   - Runs a set of analytical queries, using correct SQLAlchemy aggregation functions (`func.max`, `func.min`).
   - All column names and mappings are now consistent with the generated CSV and the domain rules.
 
-## 6. Presentation
+## 6. SQLAlchemy Core
+
+The `/SQLAlchemy_core` folder contains scripts demonstrating the use of SQLAlchemy Core for defining tables and executing queries. Key files include:
+
+- **`fuel_assembly_core_demo_full.py`**: Defines SQLAlchemy Core table schemas for a normalized database structure, including tables like `REACTOR_DESIGN`, `PLANTS`, `EPOCHS`, `REACTOR_LOCATIONS`, and `FUEL_ASSEMBLY`. Generates `CREATE TABLE` statements for both SQLite3 and Oracle.
+- **`query_examples_core.py`**: Contains example queries using SQLAlchemy Core to interact with the database. Demonstrates how to perform operations like data insertion, selection, and aggregation.
+- **`sqlalchemy_core_summary.md`**: A Markdown file summarizing the SQLAlchemy Core approach, highlighting identical table creation and query execution for SQLite and Oracle, with examples of the `FUEL_ASSEMBLY` table definition and queries.
+
+
+## 7. SQLAlchemy ORM
+
+## 8. Presentation
 
 The `/presentation` folder contains materials designed for teaching and presenting the concepts covered in this project.
 
 - **`ORM_SQLAlchemy_PyCoD_LEBAIL_062025_01.pptm`**: The presentation held in PyCoD online monthly meeting on 04/07/2025.
 - **`material/`**: Supporting images and graphics used in the presentation
-
 
 ---
 
